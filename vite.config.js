@@ -5,9 +5,4 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   assetsInclude:["**/*.glb"],
-  server: {
-    allowedHosts: [
-      'reviewer-obtain-silence-versus.trycloudflare.com'
-    ]
-  }
 })
