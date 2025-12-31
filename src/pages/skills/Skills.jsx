@@ -1,9 +1,18 @@
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
 import { useSpring, animated } from '@react-spring/web'
 import './Skills.css'
+import { APIContext } from '../../context/APIContext';
 
 const Skills = () => {
-  const skillsData = [
+    const { state, fetchData } = useContext(APIContext);
+  
+    useEffect(() => {
+      fetchData("http://localhost:4000/api/skills");
+    }, []); // ✅ safe
+  
+    const key = "GET:http://localhost:4000/api/skills";
+  
+  const skillsData = state.data[key]||[
     {
       category: 'Frontend',
       icon: '⚛️',
@@ -35,6 +44,22 @@ const Skills = () => {
       skills: ['REST APIs', 'JWT Auth', 'Microservices', 'Pandas', 'NumPy', 'Hibernate']
     }
   ]
+
+  if (state.loading[key] && !skillsData)
+    return <div className="projects-page">Loading projects...</div>;
+
+  if (state.error[key])
+    return (
+      <div className="projects-page">
+        <div className="projects-hero">
+          <h1 className="section-title">Projects</h1>
+          <p className="section-description">Failed to load projects.</p>
+          <div className="error-row">
+            <span className="error-msg">{state.error[key]}</span>
+          </div>
+        </div>
+      </div>
+    );
 
   const titleSpring = useSpring({ from: { opacity: 0, y: 30 }, to: { opacity: 1, y: 0 }, delay: 100 })
 

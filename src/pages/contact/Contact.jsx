@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import { useSpring, animated } from '@react-spring/web'
 import './Contact.css'
+import SuccessMessage from '../../components/successmessagepopup/SuccessMessage'
 
 const Contact = () => {
+  
   const [formData, setFormData] = useState({ name: '', email: '', message: '' })
   const [submitted, setSubmitted] = useState(false)
 
@@ -10,9 +12,20 @@ const Contact = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    console.log('Form submitted:', formData)
+    // const res = await fetch('http://localhost:4000/api/contact', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify(formData),
+    // });
+
+    // const data = await res.json();
+
+    // if (!res.ok) {
+    //   throw new Error(data.error || 'Something went wrong');
+    // }
+
     setSubmitted(true)
     setTimeout(() => {
       setFormData({ name: '', email: '', message: '' })
@@ -26,6 +39,13 @@ const Contact = () => {
 
   return (
     <div className="contact-page">
+      {submitted && (
+        <SuccessMessage 
+          onClose={() => setSubmitted(false)}
+          duration={5000}
+          message="Thanks for reaching out! I've received your message and will reply shortly 😊"
+        />
+      )}
       <div className="contact-hero">
         <animated.h1 style={titleSpring} className="section-title">Get In Touch</animated.h1>
         <p className="section-desc">Let's discuss your project or just say hello!</p>

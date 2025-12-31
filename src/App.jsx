@@ -1,4 +1,6 @@
-import { BrowserRouter as Router,Routes,Route} from "react-router-dom"
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
+import { APIProvider } from "./context/APIProvider"
+import ErrorBoundary from "./components/ErrorBoundary"
 import Home from "./pages/home/Home"
 import Navbar from "./components/navbar/Navbar"
 import Projects from "./pages/projects/Projects"
@@ -8,16 +10,20 @@ import Experience from "./pages/experience/Experience"
 
 const App = () => {
   return (
-    <Router>
-      <Navbar />
-       <Routes>
-         <Route path="/" element={<Home />}></Route>
-         <Route path="/projects" element={<Projects />}></Route>
-         <Route path="/skills" element={<Skills />}></Route>
-         <Route path="/experience" element={<Experience />}></Route>
-         <Route path="/contact" element={<Contact />}></Route>
-       </Routes>
-    </Router>
+    <ErrorBoundary>
+      <APIProvider>
+        <Router>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/projects" element={<Projects />} />
+            <Route path="/skills" element={<Skills />} />
+            <Route path="/experience" element={<Experience />} />
+            <Route path="/contact" element={<Contact />} />
+          </Routes>
+        </Router>
+      </APIProvider>
+    </ErrorBoundary>
   )
 }
 export default App

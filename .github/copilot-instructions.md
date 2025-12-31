@@ -1,53 +1,138 @@
-<!-- Copilot / AI agent instructions tailored to this repo -->
+﻿<!-- Copilot / AI agent instructions tailored to this repo -->
+
 # Project snapshot
 
-This is a Vite + React portfolio app with a small 3D scene using Three / @react-three/fiber. Key entry points:
+This is a Vite + React portfolio app with interactive 3D scenes using Three.js and @react-three/fiber. Key entry points:
 
-- `src/main.jsx` — app bootstrap (renders `App`).
-- `src/App.jsx` — client router and top-level layout (uses `react-router-dom` v7, `Navbar` and Pages).
+- src/main.jsx -- app bootstrap (creates React root, mounts App).
+- src/App.jsx -- BrowserRouter with all page routes and persistent Navbar.
 
 # Quick dev commands
 
-- Start dev server: `npm run dev` (runs `vite`).
-- Build: `npm run build` (runs `vite build`).
-- Preview build: `npm run preview` (runs `vite preview`).
-- Lint: `npm run lint` (ESLint configured via `eslint.config.js`).
+- Start dev server: 
+pm run dev (Vite dev server).
+- Build: 
+pm run build (output to dist/, includes GLTF models via ssetsInclude).
+- Preview built site: 
+pm run preview.
+- Lint: 
+pm run lint (ESLint, allows unused vars matching ^[A-Z_] for component names).
 
-# Architecture & conventions (what to know first)
+# Architecture
 
-- Routing: routes are declared in `src/App.jsx` with `Routes` / `Route` elements. Add new pages under `src/pages/` and register routes here.
-- Pages vs Components: site pages live under `src/pages/` (e.g., `home/Home.jsx`, `projects/Projects.jsx`); reusable UI parts go in `src/components/` (e.g., `components/navbar/`).
-- Styles: global styles are in `src/styles/global.css`. Component CSS (e.g., `Navbar.css`) is colocated in the same folder as the component.
+**File structure purpose:**
+- src/pages/ -- Full-page views (Home, Projects, Skills, Experience, Contact); each is a route.
+- src/components/ -- Reusable UI parts and 3D scenes (
+avbar/, models/, 3d/).
+- src/styles/global.css -- Global reset and utility styles.
+- Component CSS -- Colocated with component (e.g., Navbar.jsx + Navbar.css in same folder).
 
-# 3D / Assets specifics
+**Routing:**
+All routes are declared in src/App.jsx using react-router-dom v7 (uses element prop, not component):
+``jsx
+<Route path="/projects" element={<Projects />} />
+``
+Add new pages by creating a new folder under src/pages/, then register the route in src/App.jsx.
 
-- 3D models live in `public/models/` and are imported in code (example: `src/components/models/Computer.jsx` imports `public/models/gaming_room.glb`).
-- Vite is configured to include `.glb` via `assetsInclude` in `vite.config.js`. Use `useGLTF` from `@react-three/drei` and `@react-three/fiber` conventions for scene rendering.
-- When adding new large assets, place them under `public/` to serve statically rather than bundling.
+**React patterns in use:**
+- React 19 with hooks (useState, useEffect, Suspense).
+- @react-spring/web for staggered animations (see Home.jsx for animation sequencing pattern).
+- 
+eact-icons for social/UI icons.
+- Functional components only; no class components.
 
-# Project-specific linting / code patterns
+# 3D rendering & assets
 
-- `eslint.config.js` sets base rules and allows unused identifiers that match `^[A-Z_]` (used for components/constants). Respect that pattern when renaming symbols.
-- The codebase uses modern ESM syntax (package.json `type: "module"`). Keep imports as `import` rather than `require`.
+**GLTF models:**
+- Place .glb files in public/models/.
+- Import with useGLTF from @react-three/drei.
+- Access scene via useThree() hook (e.g., iewport, camera).
+- Example: src/components/models/Computer.jsx loads gaming_room.glb and logs mesh names for debugging.
+
+**Vite config:**
+ite.config.js includes .glb in ssetsInclude so models are served statically, not bundled.
+
+**3D component examples:**
+- src/components/3d/ManoModel.jsx -- Custom 3D character/avatar.
+- src/components/3d/ParticleBackground.jsx -- Animated particle system (used in Home page).
+- Wrap 3D scenes in Suspense for loading states.
+
+# Code patterns & conventions
+
+**ESLint rules:**
+- 
+o-unused-vars allows names matching ^[A-Z_] (e.g., ComputerModel, ANIMATION_DELAY).
+- Modern ESM syntax only (import, not 
+equire).
+
+**Component patterns (see Navbar.jsx):**
+- State for UI toggles and scroll detection.
+- useEffect for window events (resize, scroll); always clean up listeners in return statement.
+- useSpring animations for transitions (menu open/close, page entrance effects).
+
+**Animation pattern (Home.jsx):**
+- Use useSpring with staggered delay values for entrance animations.
+- Config: { tension: 80, friction: 20 } for snappy, responsive feel.
+- Wrap content in nimated divs from @react-spring/web.
 
 # Notable dependencies & pitfalls
 
-- React 19 and `react-router-dom` v7 are used — check `App.jsx` for v7-style `element` routes.
-- 3D stack: `three`, `@react-three/fiber`, `@react-three/drei`. Loading and traversing GLTF scenes may log mesh names (see `Computer.jsx`), so expect console output during dev.
+- **react-router-dom v7** -- Client-side routing (v7 uses element, older versions used component).
+- **@react-three/fiber** -- React renderer for Three.js scenes.
+- **@react-three/drei** -- Utilities for loading models, camera controls, etc.
+- **@react-spring/web** -- Spring-physics animations (used for page entrance effects).
+- **Swiper v12** -- Carousel/slider component (may be used on Projects or other pages).
+- **react-icons v5** -- Icon library (GitHub, LinkedIn, hamburger menu, etc.).
 
-# How AI agents should contribute
+# Common gotchas
 
-- Small changes: update the appropriate page under `src/pages/` and register routes in `src/App.jsx`.
-- Adding 3D models: add `.glb` to `public/models/` and import with a relative path from the component (example in `components/models/Computer.jsx`).
-- Styling: prefer colocated CSS for components and `src/styles/global.css` for global rules.
-- Tests: no tests exist in the repo. Do not add test scaffolding unless requested.
+- **GLTF console output:** Mesh name logging in 3D components is intentional for debugging; expect console.log during dev.
+- **React 19:** Some older React patterns won't work; favor hooks.
+- **Responsive 3D:** Use useThree().viewport to detect mobile breakpoints and adjust model scale/position.
+- **Navbar responsive:** Menu opens at innerWidth < 900px; modal links use router Link elements.
 
-# References (examples to inspect)
+# Workflow for AI agents
 
-- `src/main.jsx` — app bootstrap
-- `src/App.jsx` — routing
-- `src/components/models/Computer.jsx` — GLTF loading example
-- `vite.config.js` — `.glb` asset inclusion
-- `eslint.config.js` — linting rules
+**Adding a new page:**
+1. Create src/pages/newpage/NewPage.jsx and NewPage.css.
+2. Add route to src/App.jsx: <Route path="/newpage" element={<NewPage />} />.
+3. Update navbar links in src/components/navbar/Navbar.jsx if needed.
 
-If anything here is unclear or you'd like a different tone/level of detail (more examples, or merge with an existing internal guide), tell me which parts to expand or trim.
+**Adding 3D assets:**
+1. Place .glb in public/models/.
+2. Create component in src/components/models/ (or src/components/3d/ for reusable effects).
+3. Use useGLTF('/models/filename.glb') and useThree() for viewport-aware scaling.
+
+**Styling:**
+- Global utilities in src/styles/global.css.
+- Component-specific CSS in same folder as component (colocated).
+- Plain CSS only (no CSS-in-JS, Tailwind, or CSS Modules).
+
+**Testing:** No test suite. Do not scaffold tests unless explicitly requested.
+
+# API & Backend integration
+
+**Vercel Serverless Functions:**
+- API endpoints live in `api/` folder (auto-deployed by Vercel).
+- Each `.js` file becomes a route: `api/projects.js` → `https://yourdomain.com/api/projects`.
+- Return JSON responses; add `Cache-Control` headers for performance.
+
+**Global State Management:**
+- `src/context/APIContext.jsx` — Global API state with built-in caching (5 min TTL).
+- Manages: data, loading states, errors, and automatic request deduplication.
+- Uses `useReducer` for predictable state updates.
+
+**Custom Hooks:**
+- `useFetchEndpoint('/api/projects')` — Auto-fetches on mount, returns `{ data, loading, error, refetch }`.
+- `useAPI()` — Lower-level hook for manual control: `const { fetchData, state, clearCache } = useAPI()`.
+
+**Error Handling:**
+- `ErrorBoundary` component wraps `App` to catch and display render errors gracefully.
+- API errors automatically stored in context; components can display error UI conditionally.
+
+**Performance Optimizations:**
+- 5-minute request caching prevents duplicate API calls for same endpoint.
+- `useMemo` and `useCallback` prevent unnecessary context re-renders.
+- Serverless functions benefit from Vercel's edge caching and auto-scaling.
+
+**Example:** `src/components/examples/ProjectsExample.jsx` shows proper usage pattern.

@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+.github
+/api/node_modules
+/api/.env
+/api/package.json
+/api/package-lock.json
+/api/server.js
