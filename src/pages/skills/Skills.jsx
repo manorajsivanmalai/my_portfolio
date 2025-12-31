@@ -7,10 +7,10 @@ const Skills = () => {
     const { state, fetchData } = useContext(APIContext);
   
     useEffect(() => {
-      fetchData("http://localhost:4000/api/skills");
+      fetchData("/api/skills");
     }, []); // ✅ safe
   
-    const key = "GET:http://localhost:4000/api/skills";
+    const key = "GET:/api/skills";
   
   const skillsData = state.data[key]||[
     {

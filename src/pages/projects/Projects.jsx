@@ -12,10 +12,10 @@ const Projects = () => {
   const { state, fetchData } = useContext(APIContext);
 
   useEffect(() => {
-    fetchData("http://localhost:4000/api/projects");
+    fetchData("/api/projects");
   }, []); // ✅ safe
 
-  const key = "GET:http://localhost:4000/api/projects";
+  const key = "GET:/api/projects";
 
   const projects = state.data[key] || [
     {
@@ -52,7 +52,7 @@ const Projects = () => {
       gitHub: "https://github.com/manorajsivanmalai/press-relese-generator.git",
     },
   ];
-  
+
   const titleSpring = useSpring({
     from: { opacity: 0, y: 30 },
     to: { opacity: 1, y: 0 },

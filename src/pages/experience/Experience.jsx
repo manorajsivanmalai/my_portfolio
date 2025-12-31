@@ -7,10 +7,10 @@ const Experience = () => {
   const { state, fetchData } = useContext(APIContext);
 
   useEffect(() => {
-    fetchData("http://localhost:4000/api/experiences");
+    fetchData("/api/experiences");
   }, []); // ✅ safe
 
-  const key = "GET:http://localhost:4000/api/experiences";
+  const key = "GET:/api/experiences";
 
   const experiences = state.data[key] || [
     {
